@@ -9,6 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event_name == 'issues' && contains(github.event.issue.labels.*.name, 'bug')
     permissions:
+      contents: read
       issues: write
     steps:
       - name: Checkout repository
@@ -19,13 +20,26 @@ jobs:
         id: parse
         with:
           template-path: .github/ISSUE_TEMPLATE/01-bug_report.yml
-          
 
       - name: Build formatted issue body
         id: summary
+        env:
+          DESCRIPTION: ${{ steps.parse.outputs.issueparser_description }}
+          REPRODUCTION_STEPS: ${{ steps.parse.outputs.issueparser_reproduction_steps }}
+          CODE_SAMPLE: ${{ steps.parse.outputs.issueparser_code_sample }}
+          WHATSAPP_TYPE: ${{ steps.parse.outputs.issueparser_whatsapp_type }}
+          AUTH_TYPE: ${{ steps.parse.outputs.issueparser_auth_type }}
+          LIB_VERSION: ${{ steps.parse.outputs.issueparser_lib_version }}
+          WWEB_VERSION: ${{ steps.parse.outputs.issueparser_wweb_version }}
+          BROWSER_TYPE: ${{ steps.parse.outputs.issueparser_browser_type }}
+          BROWSER_VERSION: ${{ steps.parse.outputs.issueparser_browser_version }}
+          COMPUTER_OS: ${{ steps.parse.outputs.issueparser_computer_os }}
+          PHONE_OS: ${{ steps.parse.outputs.issueparser_phone_os }}
+          NODE_VERSION: ${{ steps.parse.outputs.issueparser_node_version }}
+          CHECKLIST: ${{ steps.parse.outputs.issueparser_checklist }}
         run: |
           {
-            echo 'body<<EOF'
+            echo 'body<<BODY_DELIMITER'
             echo '## Issue Description'
             echo "$DESCRIPTION"
             echo ''
@@ -60,23 +74,8 @@ jobs:
               echo '- [x] I have searched existing issues and confirmed this is not a duplicate.'
               echo '- [x] I have verified this is a library issue, not a problem with my code.'
             fi
-            echo 'EOF'
+            echo 'BODY_DELIMITER'
           } >> "$GITHUB_OUTPUT"
-        env:
-          PRIORITY: ${{ steps.parse.outputs.issueparser_priority }}
-          DESCRIPTION: ${{ steps.parse.outputs.issueparser_description }}
-          REPRODUCTION_STEPS: ${{ steps.parse.outputs.issueparser_reproduction_steps }}
-          CODE_SAMPLE: ${{ steps.parse.outputs.issueparser_code_sample }}
-          WHATSAPP_TYPE: ${{ steps.parse.outputs.issueparser_whatsapp_type }}
-          AUTH_TYPE: ${{ steps.parse.outputs.issueparser_auth_type }}
-          LIB_VERSION: ${{ steps.parse.outputs.issueparser_lib_version }}
-          WWEB_VERSION: ${{ steps.parse.outputs.issueparser_wweb_version }}
-          BROWSER_TYPE: ${{ steps.parse.outputs.issueparser_browser_type }}
-          BROWSER_VERSION: ${{ steps.parse.outputs.issueparser_browser_version }}
-          COMPUTER_OS: ${{ steps.parse.outputs.issueparser_computer_os }}
-          PHONE_OS: ${{ steps.parse.outputs.issueparser_phone_os }}
-          NODE_VERSION: ${{ steps.parse.outputs.issueparser_node_version }}
-          CHECKLIST: ${{ steps.parse.outputs.issueparser_checklist }}
 
       - name: Update issue body
         uses: julien-deramond/update-issue-body@v1
@@ -87,8 +86,9 @@ jobs:
 
       - name: Determine priority label
         id: priority_label
+        env:
+          PRIORITY: ${{ steps.parse.outputs.issueparser_priority }}
         run: |
-          PRIORITY="${{ steps.parse.outputs.issueparser_priority }}"
           if [[ "$PRIORITY" == "Low"* ]]; then
             echo "label=issue priority low" >> "$GITHUB_OUTPUT"
           elif [[ "$PRIORITY" == "Medium"* ]]; then
