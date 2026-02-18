@@ -14,6 +14,8 @@ jobs:
       - name: Parse issue form body
         uses: stefanbuck/github-issue-parser@v3
         id: parse
+        with:
+          template-path: .github/ISSUE_TEMPLATE/01-bug_report.yml
 
       - name: Build formatted issue body
         id: summary
@@ -57,19 +59,19 @@ jobs:
             echo 'EOF'
           } >> "$GITHUB_OUTPUT"
         env:
-          PRIORITY: ${{ steps.parse.outputs.issueparser_issue_priority }}
-          DESCRIPTION: ${{ steps.parse.outputs.issueparser_issue_description }}
-          REPRODUCTION_STEPS: ${{ steps.parse.outputs.issueparser_steps_to_reproduce }}
+          PRIORITY: ${{ steps.parse.outputs.issueparser_priority }}
+          DESCRIPTION: ${{ steps.parse.outputs.issueparser_description }}
+          REPRODUCTION_STEPS: ${{ steps.parse.outputs.issueparser_reproduction_steps }}
           CODE_SAMPLE: ${{ steps.parse.outputs.issueparser_code_sample }}
-          WHATSAPP_TYPE: ${{ steps.parse.outputs.issueparser_whatsapp_account_type }}
-          AUTH_TYPE: ${{ steps.parse.outputs.issueparser_authentication_strategy }}
-          LIB_VERSION: ${{ steps.parse.outputs.issueparser_whatsapp_web_js_version }}
-          WWEB_VERSION: ${{ steps.parse.outputs.issueparser_whatsapp_web_version }}
+          WHATSAPP_TYPE: ${{ steps.parse.outputs.issueparser_whatsapp_type }}
+          AUTH_TYPE: ${{ steps.parse.outputs.issueparser_auth_type }}
+          LIB_VERSION: ${{ steps.parse.outputs.issueparser_lib_version }}
+          WWEB_VERSION: ${{ steps.parse.outputs.issueparser_wweb_version }}
           BROWSER_TYPE: ${{ steps.parse.outputs.issueparser_browser_type }}
           BROWSER_VERSION: ${{ steps.parse.outputs.issueparser_browser_version }}
-          COMPUTER_OS: ${{ steps.parse.outputs.issueparser_computer_os_version }}
-          PHONE_OS: ${{ steps.parse.outputs.issueparser_phone_os_version }}
-          NODE_VERSION: ${{ steps.parse.outputs.issueparser_node_js_version }}
+          COMPUTER_OS: ${{ steps.parse.outputs.issueparser_computer_os }}
+          PHONE_OS: ${{ steps.parse.outputs.issueparser_phone_os }}
+          NODE_VERSION: ${{ steps.parse.outputs.issueparser_node_version }}
           CHECKLIST: ${{ steps.parse.outputs.issueparser_checklist }}
 
       - name: Update issue body
@@ -82,7 +84,7 @@ jobs:
       - name: Determine priority label
         id: priority_label
         run: |
-          PRIORITY="${{ steps.parse.outputs.issueparser_issue_priority }}"
+          PRIORITY="${{ steps.parse.outputs.issueparser_priority }}"
           if [[ "$PRIORITY" == "Low"* ]]; then
             echo "label=issue priority low" >> "$GITHUB_OUTPUT"
           elif [[ "$PRIORITY" == "Medium"* ]]; then
