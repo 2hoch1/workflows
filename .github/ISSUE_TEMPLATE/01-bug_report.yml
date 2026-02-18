@@ -22,7 +22,7 @@ body:
         - Low (slightly annoying)
         - Medium (should be fixed soon)
         - High (immediate attention needed)
-      default: 1
+      default: 0
     validations:
       required: true
 
@@ -45,7 +45,7 @@ body:
         1. Do this
         2. Do that
         ...
-        
+
         9. See error
     validations:
       required: true
