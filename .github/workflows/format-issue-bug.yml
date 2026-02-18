@@ -90,11 +90,11 @@ jobs:
           PRIORITY: ${{ steps.parse.outputs.issueparser_priority }}
         run: |
           if [[ "$PRIORITY" == "Low"* ]]; then
-            echo "label=issue priority low" >> "$GITHUB_OUTPUT"
+            echo "label=issued low" >> "$GITHUB_OUTPUT"
           elif [[ "$PRIORITY" == "Medium"* ]]; then
-            echo "label=issue priority medium" >> "$GITHUB_OUTPUT"
+            echo "label=issued medium" >> "$GITHUB_OUTPUT"
           elif [[ "$PRIORITY" == "High"* ]]; then
-            echo "label=issue priority high" >> "$GITHUB_OUTPUT"
+            echo "label=issued high" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Add priority label
