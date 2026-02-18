@@ -11,11 +11,15 @@ jobs:
     permissions:
       issues: write
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       - name: Parse issue form body
         uses: stefanbuck/github-issue-parser@v3
         id: parse
         with:
           template-path: .github/ISSUE_TEMPLATE/01-bug_report.yml
+          
 
       - name: Build formatted issue body
         id: summary
