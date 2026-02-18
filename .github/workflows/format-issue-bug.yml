@@ -7,8 +7,7 @@ on:
 jobs:
   format:
     runs-on: ubuntu-latest
-    # Only run for bug reports
-    if: contains(github.event.issue.labels.*.name, 'bug')
+    if: github.event_name == 'issues' && contains(github.event.issue.labels.*.name, 'bug')
     permissions:
       issues: write
     steps:
@@ -68,7 +67,7 @@ jobs:
           WWEB_VERSION: ${{ steps.parse.outputs.issueparser_whatsapp_web_version }}
           BROWSER_TYPE: ${{ steps.parse.outputs.issueparser_browser_type }}
           BROWSER_VERSION: ${{ steps.parse.outputs.issueparser_browser_version }}
-          COMPUTER_OS: ${{ steps.parse.outputs.issueparser_running_os_version }}
+          COMPUTER_OS: ${{ steps.parse.outputs.issueparser_computer_os_version }}
           PHONE_OS: ${{ steps.parse.outputs.issueparser_phone_os_version }}
           NODE_VERSION: ${{ steps.parse.outputs.issueparser_node_js_version }}
           CHECKLIST: ${{ steps.parse.outputs.issueparser_checklist }}
