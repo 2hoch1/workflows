@@ -137,7 +137,7 @@
   description: 'Below project standards'
 
 # Project Specific
-- name: 'documentation'
+- name: 'docs'
   color: '#0075ca'
   description: 'Documentation changes'
 - name: 'whatsapp bug'
